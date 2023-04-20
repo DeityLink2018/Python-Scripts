@@ -1,0 +1,68 @@
+import os
+import time
+import threading
+
+def display_menu():
+    # Clear the screen
+    os.system('clear')
+    
+    # Display the menu options
+    print("=== MENU ===")
+    print("1. Option 1")
+    print("2. Option 2")
+    print("3. Option 3")
+    print("4. Exit")
+
+def read_file():
+    with open("file.txt", "r") as f:
+        content = f.read()
+        return content
+
+def update_checker():
+    global content
+    while True:
+        # Read the file and check for updates
+        new_content = read_file()
+        
+        # If the file has been updated, store the new content
+        if new_content != content:
+            content = new_content
+            
+        # Wait for 1 second before checking again
+        time.sleep(1)
+
+def user_input_handler():
+    while True:
+        # Get user input
+        choice = input("Enter your choice: ")
+        
+        # Process user input
+        if choice == '1':
+            print("Option 1 selected")
+        elif choice == '2':
+            print("Option 2 selected")
+        elif choice == '3':
+            print("Option 3 selected")
+        elif choice == '4':
+            print("Exiting...")
+            break
+        else:
+            print("Invalid choice. Please try again.")
+        
+# Initial display of menu
+display_menu()
+
+# Initialize content variable
+content = read_file()
+
+# Start the update checker thread
+update_thread = threading.Thread(target=update_checker)
+update_thread.start()
+
+# Start the user input handler thread
+input_thread = threading.Thread(target=user_input_handler)
+input_thread.start()
+
+# Wait for both threads to finish
+update_thread.join()
+input_thread.join()
